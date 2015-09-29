@@ -1,18 +1,30 @@
-	unsigned long lastTime = 0;
-char buffer[4]; 
+extern boolean pressed[7];
+
+const int BTN_LEFT = 0;
+const int BTN_UP = 1;
+const int BTN_RIGHT = 2;
+const int BTN_DOWN = 3;
+const int BTN_A = 4;
+const int BTN_B = 5;
+const int BTN_C = 6;
 
 void setup(void) {
 	lcdInitialise();
 	lcdClear();
-	lcdString("Hello Mum!");
+	buttonsInitialize();
 }
 
 void loop(void) {
-	delay(500);
-	unsigned long now = millis();
-	unsigned long elapsed = now - lastTime;
-	lastTime = now;
-	lcdCharacter(' ');
-	lcdString(ltoa(elapsed, buffer, 10));
+	buttonsUpdate();
+	checkButtonPressed();
+
+}
+
+void checkButtonPressed() {
+	for (int i = 0; i < 7; i++) {
+		if (pressed[i]) {
+			lcdCharacter(i + 48);
+		}
+	}
 }
 

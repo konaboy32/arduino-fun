@@ -6,7 +6,8 @@ rem ----------------------------------------------------------------------------
 set source=%PROJECT_HOME%\lcd_hello\lcd_hello.ino
 rem -----------------------------------------------------------------------------------
 
-rmdir %PROJECT_HOME%\build /s /q
-mkdir %PROJECT_HOME%\build
+rem rmdir %PROJECT_HOME%\build /s /q
+rem mkdir %PROJECT_HOME%\build
+
 %compile% %source%
 pause

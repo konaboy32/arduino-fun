@@ -9,6 +9,7 @@
 
 #define LCD_WIDTH		84
 #define LCD_HEIGHT	48
+#define LCD_ROWS		6
 
 extern const byte ASCII[][5];
 
@@ -49,17 +50,21 @@ void lcdString(const char *characters) {
 }
 
 void lcdWriteCommand(byte data) {
-  LcdWrite(LCD_COMMAND, data);
+	lcdWrite(LCD_COMMAND, data);
 }
 
 void lcdWriteData(byte data) {
-  LcdWrite(LCD_DATA, data);
+	lcdWrite(LCD_DATA, data);
 }
 
-void LcdWrite(byte dc, byte data) {
+void lcdWrite(byte dc, byte data) {
 	digitalWrite(PIN_DC, dc);
 	digitalWrite(PIN_SCE, LOW);
 	shiftOut(PIN_SDIN, PIN_SCLK, MSBFIRST, data);
 	digitalWrite(PIN_SCE, HIGH);
 }
 
+void lcdGotoXY(int x, int y) {
+	lcdWriteCommand(0x80 | x);
+	lcdWriteCommand(0x40 | y);
+}
