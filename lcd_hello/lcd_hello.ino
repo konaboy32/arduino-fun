@@ -1,30 +1,44 @@
-extern boolean pressed[7];
+#include "settings.h"
 
-const int BTN_LEFT = 0;
-const int BTN_UP = 1;
-const int BTN_RIGHT = 2;
-const int BTN_DOWN = 3;
-const int BTN_A = 4;
-const int BTN_B = 5;
-const int BTN_C = 6;
+extern boolean pressed[BTNS];
+int playerXpos = 40;
 
 void setup(void) {
 	lcdInitialise();
 	lcdClear();
 	buttonsInitialize();
+	lcdCharXY(playerXpos, PLAYER_ROW, '#');
 }
 
 void loop(void) {
 	buttonsUpdate();
-	checkButtonPressed();
-
+	checkButtons();
 }
 
-void checkButtonPressed() {
-	for (int i = 0; i < 7; i++) {
-		if (pressed[i]) {
-			lcdCharacter(i + 48);
-		}
+void checkButtons() {
+  if (pressed[BTN_A]) {
+	  handleRightInput();
+		return;
+	}
+	if (pressed[BTN_LEFT] || pressed[BTN_UP] || pressed[BTN_DOWN] || pressed[BTN_RIGHT]) {
+	  handleLeftInput();
 	}
 }
+
+void handleRightInput() {
+  if (playerXpos < LCD_WIDTH - PLAYER_WIDTH - 4) {
+	  lcdCharXY(playerXpos, PLAYER_ROW, ' ');
+	  playerXpos = playerXpos + PLAYER_WIDTH;
+		lcdCharXY(playerXpos, PLAYER_ROW, '#');
+	}
+}
+
+void handleLeftInput() {
+  if (playerXpos > 0) {
+	  lcdCharXY(playerXpos, PLAYER_ROW, ' ');
+	  playerXpos = playerXpos - PLAYER_WIDTH;
+		lcdCharXY(playerXpos, PLAYER_ROW, '#');
+	}
+}
+
 
