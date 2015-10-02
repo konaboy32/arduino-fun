@@ -30,6 +30,8 @@
 #define PLAYER_WIDTH		8
 #define PLAYER_ROW			5
 
+#define DROP_INTERVAL		100
+
 
 
 
