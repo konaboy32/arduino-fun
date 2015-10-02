@@ -36,6 +36,11 @@ void lcdString(const char *characters) {
 	}
 }
 
+void lcdStringXY(int x, int y, const char *characters) {
+	lcdGotoXY(x, y);
+	lcdString(characters);
+}
+
 void lcdGotoXY(int x, int y) {
 	lcdWriteCommand(0x80 | x);
 	lcdWriteCommand(0x40 | y);

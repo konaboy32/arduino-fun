@@ -2,6 +2,10 @@
 
 extern boolean pressed[BTNS];
 int playerXpos = 40;
+long lastFrame = 0;
+long now = 0;
+int frameRate = 0;
+char frameRateStr[4];
 
 void setup(void) {
 	lcdInitialise();
@@ -11,9 +15,19 @@ void setup(void) {
 }
 
 void loop(void) {
+	fps();
 	buttonsUpdate();
 	checkButtons();
 }
+
+void fps() {
+  now = millis();
+	frameRate = 1000 / (now - lastFrame);
+	lastFrame = now;
+	itoa(frameRate, frameRateStr, 10);
+	lcdStringXY(1, 1, frameRateStr);
+}
+
 
 void checkButtons() {
   if (pressed[BTN_A]) {
