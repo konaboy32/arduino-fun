@@ -1,17 +1,17 @@
 #include "settings.h"
 
 extern boolean pressed[BTNS];
-int playerXpos = 40;
+short playerXpos = 40;
 long lastFrame = 0;
 long now = 0;
-int frameRate = 0;
-char frameRateStr[4];
+short elapsed = 0;
+char elapsedStr[4];
 short frameCount;
 short dropRenderInterval = DROP_INTERVAL;
 
 struct Drop {
-	int x;
-	int y;
+	short x;
+	short y;
 };
 
 struct Drop drop;
@@ -39,10 +39,10 @@ void gameInitialize() {
 
 void fps() {
 	now = millis();
-	frameRate = 1000 / (now - lastFrame);
+	elapsed = now - lastFrame;
 	lastFrame = now;
-	itoa(frameRate, frameRateStr, 10);
-	lcdStringXY(1, 1, frameRateStr);
+	itoa(elapsed, elapsedStr, 10);
+	lcdStringXY(1, 1, elapsedStr);
 }
 
 void drawDrops() {
@@ -52,7 +52,8 @@ void drawDrops() {
 			drop.y++;
 		} else {
 			drop.y = 1;
-			drop.x = (rand() % 9) * PLAYER_WIDTH;
+			drop.x = (rand() % 10) * PLAYER_WIDTH;
+			dropRenderInterval--;
 		}
 		lcdCharXY(drop.x, drop.y, '*');
 		frameCount = 0;
