@@ -4,6 +4,8 @@
 #define PIN_SDIN		11
 #define PIN_SCLK		13
 
+#define PIN_SOUND		3
+
 #define LCD_COMMAND	LOW
 #define LCD_DATA		HIGH
 

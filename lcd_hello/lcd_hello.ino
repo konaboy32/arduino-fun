@@ -1,27 +1,27 @@
 #include "settings.h"
 
+struct Drop {
+	short x;
+	short y;
+};
+
 extern boolean pressed[BTNS];
 short playerXpos = 40;
 long lastFrame = 0;
 long now = 0;
 short elapsed = 0;
 char elapsedStr[4];
-short frameCount;
+short frameCounter = 0;
 short dropRenderInterval = DROP_INTERVAL;
-
-struct Drop {
-	short x;
-	short y;
-};
-
 struct Drop drop;
 
 void setup(void) {
-	gameInitialize();
 	lcdInitialise();
 	lcdClear();
+	soundInitialize();
 	buttonsInitialize();
 	lcdCharXY(playerXpos, PLAYER_ROW, '#');
+	gameInitialize();
 }
 
 void loop(void) {
@@ -35,6 +35,7 @@ void gameInitialize() {
   srand(millis());
 	drop.x = 40;
 	drop.y = 1;
+	lastFrame = millis();
 }
 
 void fps() {
@@ -46,20 +47,23 @@ void fps() {
 }
 
 void drawDrops() {
-	if (frameCount++ > dropRenderInterval) {
+	if (frameCounter++ > dropRenderInterval) {
 		lcdCharXY(drop.x, drop.y, ' ');
 		if (drop.y < LCD_ROWS - 1) {
 			drop.y++;
 		} else {
-			drop.y = 1;
-			drop.x = (rand() % 10) * PLAYER_WIDTH;
-			dropRenderInterval--;
+			handleDropReachedBottom();
 		}
 		lcdCharXY(drop.x, drop.y, '*');
-		frameCount = 0;
+		frameCounter = 0;
 	}
 }
 
+void handleDropReachedBottom() {
+	drop.y = 1;
+	drop.x = (rand() % 10) * PLAYER_WIDTH;
+	dropRenderInterval--;
+}
 
 void drawPlayer() {
 	if (pressed[BTN_A]) {
@@ -74,7 +78,7 @@ void drawPlayer() {
 void handleRightInput() {
 	if (playerXpos < LCD_WIDTH - PLAYER_WIDTH - 4) {
 		lcdCharXY(playerXpos, PLAYER_ROW, ' ');
-		playerXpos = playerXpos + PLAYER_WIDTH;
+		playerXpos += PLAYER_WIDTH;
 		lcdCharXY(playerXpos, PLAYER_ROW, '#');
 	}
 }
@@ -82,7 +86,7 @@ void handleRightInput() {
 void handleLeftInput() {
 	if (playerXpos > 0) {
 		lcdCharXY(playerXpos, PLAYER_ROW, ' ');
-		playerXpos = playerXpos - PLAYER_WIDTH;
+		playerXpos -= PLAYER_WIDTH;
 		lcdCharXY(playerXpos, PLAYER_ROW, '#');
 	}
 }
