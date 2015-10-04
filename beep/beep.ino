@@ -8,13 +8,11 @@
 #define NOTE_C5 57
 
 boolean playTone = false;
-boolean cycleHigh = false;
-
+byte output = 0;
 long timerCounter = 0;
 long halfCycleCounter = 0;
-
-long totalHalfCycles = 0;
-int tonePitch = 0;
+long maxHalfCycles = 0;
+int maxTimerInterrupts = 0;
 
 void setup(void) {
 
@@ -67,36 +65,29 @@ void loop(void) {
 	delay(1000);
 }
 
-void playBeepTone(int pitch, int halfCycles) {
+void playBeepTone(int pitch, int duration) {
 	timerCounter = 0;
 	playTone = true;
-	tonePitch = pitch;
-	totalHalfCycles = halfCycles;
+	maxTimerInterrupts = pitch;
+	maxHalfCycles = duration;
 }
 
 ISR(TIMER1_COMPA_vect) {
 	if (playTone) {
 	
-		//toggle output after n timer interrupts to create square wave
-		if (timerCounter++ > tonePitch) {
-			if (cycleHigh) {
-				OCR2B = 0;
-			} else {
-				OCR2B = 255;
-			}
-			cycleHigh = !cycleHigh;
+		//toggle output on/off after n timer interrupts creating square wave
+		if (timerCounter++ > maxTimerInterrupts) {
+			output = ~output;
+			OCR2B = output;
 			timerCounter = 0;
 			halfCycleCounter++;
 		}
 		
-		//switch output off if duration exceeded
-		if (halfCycleCounter > totalHalfCycles) {
+		//switch output off when duration exceeded
+		if (halfCycleCounter > maxHalfCycles) {
 			playTone = false;
 			halfCycleCounter = 0;
 			OCR2B = 0;
 		}
 	}
 }
-
-
-
